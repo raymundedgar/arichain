@@ -20,14 +20,14 @@
 
 - if you need invite code for register you can use mine: 
     ```
-    678b90d462361
+    678f0e6a23037
     ```
 
 ## Installation
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/Zlkcyber/arichain.git
+    git clone https://github.com/raymundedgar/arichain.git
     cd arichain
     ```
 

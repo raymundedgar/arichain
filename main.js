@@ -11,13 +11,21 @@ import {
 } from './utils/helper.js';
 import readline from 'readline';
 
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+function askQuestion(query) {
+    return new Promise((resolve) => {
+        rl.question(query, (answer) => {
+            resolve(answer);
+        });
+    });
+}
+
 function getInviteCode() {
     return new Promise((resolve) => {
-        // const rl = readline.createInterface({
-        //     input: process.stdin,
-        //     output: process.stdout,
-        // });
-
         // rl.question('Enter your invite code: ', (code) => {
         //     rl.close();
         //     resolve(code);
@@ -130,37 +138,38 @@ async function main() {
     const invite_code = await getInviteCode() // `678b90d462361`
     log.warn(`Starting Running Program [ CTRL + C ] to exit...`)
 
-    while (true) {
-        try {
-            const proxy = proxies[proxyIndex] || null;
-            proxyIndex = (proxyIndex + 1) % proxies.length
-            let account = await mailjs.createOneAccount();
-            while (!account?.data?.username) {
-                log.warn('Failed To Generate New Email, Retrying...');
-                await delay(3)
-                account = await mailjs.createOneAccount();
-            }
+    try {
+        const proxy = proxies[proxyIndex] || null;
+        proxyIndex = (proxyIndex + 1) % proxies.length
 
-            const email = account.data.username;
-            const pass = account.data.password;
-            const password = `${pass}Ari321#`
+        const email = await askQuestion('Enter your email: ');
+        const pass = await askQuestion('Enter your password: ');
+        const password = `${pass}Ari321#`
 
-            log.info('Trying to register email:', `${email} with invited Code: ${invite_code}`);
-            log.info('Register Using Proxy:', proxy || "without proxy");
-            let sendingOtp = await sendOtp(email, proxy);
-            while (!sendingOtp) {
-                log.warn('Failed to send OTP, Retrying...');
-                await delay(3)
-                sendingOtp = await sendOtp(email, proxy);
-            }
+        log.info('Trying to register email:', `${email} with invited Code: ${invite_code}`);
+        log.info('Register Using Proxy:', proxy || "without proxy");
+        let sendingOtp = await sendOtp(email, proxy);
+        while (!sendingOtp) {
+            log.warn('Failed to send OTP, Retrying...');
+            await delay(3)
+            sendingOtp = await sendOtp(email, proxy);
+        }
 
-            await mailjs.login(email, password);
-            const otp = await waitForEmail(mailjs)
-            log.info(`Email ${email} received OTP:`, otp);
-            const valid_code = await checkCode(email, otp, proxy);
+        const valid_code = await askQuestion('Enter your code: ');
 
-            if (valid_code) {
-                let response = await register(
+        if (valid_code) {
+            let response = await register(
+                email,
+                password,
+                password,
+                valid_code,
+                invite_code,
+                proxy
+            );
+            while (!response) {
+                log.warn(`Failed to registering ${email}, retrying...`)
+                await delay(1)
+                response = await register(
                     email,
                     password,
                     password,
@@ -168,25 +177,12 @@ async function main() {
                     invite_code,
                     proxy
                 );
-                while (!response) {
-                    log.warn(`Failed to registering ${email}, retrying...`)
-                    await delay(1)
-                    response = await register(
-                        email,
-                        password,
-                        password,
-                        valid_code,
-                        invite_code,
-                        proxy
-                    );
-                }
-                await saveToFile('accounts.txt', `${email}|${password}`)
             }
-
-        } catch (error) {
-            log.error(`Error when registering ${email}:`, error.message);
+            await saveToFile('accounts.txt', `${email}|${password}`)
         }
-        await delay(3)
+        rl.close();
+    } catch (error) {
+        log.error(`Error when registering ${email}:`, error.message);
     }
 }
 

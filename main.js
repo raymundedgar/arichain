@@ -144,8 +144,7 @@ async function main() {
         proxyIndex = (proxyIndex + 1) % proxies.length
 
         const email = await askQuestion('Enter your email: ');
-        const pass = await askQuestion('Enter your password: ');
-        const password = `${pass}Ari321#`
+        const password = `G!mA1L#P@ssw0rd^2025`
 
         log.info('Trying to register email:', `${email} with invited Code: ${invite_code}`);
         log.info('Register Using Proxy:', proxy || "without proxy");

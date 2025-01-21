@@ -13,15 +13,16 @@ import readline from 'readline';
 
 function getInviteCode() {
     return new Promise((resolve) => {
-        const rl = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout,
-        });
+        // const rl = readline.createInterface({
+        //     input: process.stdin,
+        //     output: process.stdout,
+        // });
 
-        rl.question('Enter your invite code: ', (code) => {
-            rl.close();
-            resolve(code);
-        });
+        // rl.question('Enter your invite code: ', (code) => {
+        //     rl.close();
+        //     resolve(code);
+        // });
+        resolve("678f0e6a23037");
     });
 }
 

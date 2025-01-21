@@ -6,7 +6,8 @@
   "main": "main.js",
   "devDependencies": {},
   "scripts": {
-    "start": "node main.js"
+    "start": "node main.js",
+    "orig": "node orig.js"
   },
   "author": "zlkcyber",
   "license": "MIT",

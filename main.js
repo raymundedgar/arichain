@@ -103,7 +103,7 @@ async function register(email, pw, pw_re, valid_code, invite_code, proxy) {
             httpsAgent: agent,
         });
         log.info('Register Result:', response.data);
-        await saveToFile('result.txt', `${response.data}`)
+        await saveToFile('result.txt', JSON.stringify(response.data, null, 2));
         return response.data;
     } catch (error) {
         log.error(`Error when registering ${email} got error code:`, error.status);
